@@ -30,7 +30,7 @@ RxCheck rivian_rx_checks[] = {
   {.msg = {{0x150, 0, 7, .frequency = 50U}, { 0 }, { 0 }}},   // VDM_PropStatus (gas pedal)
   {.msg = {{0x38f, 0, 6, .frequency = 50U}, { 0 }, { 0 }}},   // iBESP2 (brakes)
   {.msg = {{0x162, 0, 8, .frequency = 100U}, { 0 }, { 0 }}},  // VDM_AdasSts
-  {.msg = {{0x100, 0, 8, .frequency = 100U}, { 0 }, { 0 }}},  // ACM_Status (cruise state)
+  {.msg = {{0x100, 2, 8, .frequency = 100U}, { 0 }, { 0 }}},  // ACM_Status (cruise state)
   {.msg = {{0x101, 2, 8, .frequency = 100U}, { 0 }, { 0 }}},  // ACM_AebRequest (aeb)
   {.msg = {{0x160, 2, 5, .frequency = 100U}, { 0 }, { 0 }}},  // ACM_longitudinalRequest (cruise control)
 };
@@ -68,15 +68,16 @@ static void rivian_rx_hook(const CANPacket_t *to_push) {
     if(addr == 0x38f){
       brake_pressed = GET_BIT(to_push, 23U);
     }
+  }
+
+  if (bus == 2) {
 
     // Cruise state
     if(addr == 0x100) {
       bool cruise_engaged = (((GET_BYTE(to_push, 2)) >> 5) == 2U);
       pcm_cruise_check(cruise_engaged);
     }
-  }
 
-  if (bus == 2) {
     if (rivian_longitudinal && (addr == 0x101)) {
       // "AEB_ACTIVE"
       rivian_stock_aeb = GET_BIT(to_push, 47U);
