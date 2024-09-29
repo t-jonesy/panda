@@ -137,7 +137,14 @@ static int rivian_fwd_hook(int bus_num, int addr) {
   int bus_fwd = -1;
 
   if(bus_num == 0) {
-    bus_fwd = 2;
+    // ACM_AdasSts
+    if (addr == 0x162) {
+      block_msg = true;
+    }
+
+    if(!block_msg) {
+      bus_fwd = 2;
+    }
   }
 
   if(bus_num == 2) {
