@@ -22,6 +22,7 @@ const int FLAG_RIVIAN_LONG_CONTROL = 1;
 const CanMsg RIVIAN_TX_MSGS[] = {
   {0x110, 0, 8},  // ACM_SteeringControl
   {0x160, 0, 5},  // ACM_longitudinalRequest
+  {0x162, 2, 8},  // ACM_AdasSts
 };
 
 RxCheck rivian_rx_checks[] = {
