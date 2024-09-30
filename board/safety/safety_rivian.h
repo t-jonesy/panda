@@ -135,14 +135,11 @@ static bool rivian_tx_hook(const CANPacket_t *to_send) {
 
 static int rivian_fwd_hook(int bus_num, int addr) {
   int bus_fwd = -1;
+  bool block_msg = false;
 
   if(bus_num == 0) {
-    // ACM_AdasSts
-    if (addr == 0x162) {
-      block_msg = true;
-    }
-
-    if(!block_msg) {
+    // block ACM_AdasSts
+    if (addr != 0x162) {
       bus_fwd = 2;
     }
   }
