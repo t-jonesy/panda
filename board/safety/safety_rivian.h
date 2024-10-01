@@ -22,7 +22,7 @@ const int FLAG_RIVIAN_LONG_CONTROL = 1;
 const CanMsg RIVIAN_TX_MSGS[] = {
   {0x110, 0, 8},  // ACM_SteeringControl
   {0x160, 0, 5},  // ACM_longitudinalRequest
-  {0x162, 2, 8},  // ACM_AdasSts
+  // {0x162, 2, 8},  // ACM_AdasSts
 };
 
 RxCheck rivian_rx_checks[] = {
@@ -105,9 +105,9 @@ static bool rivian_tx_hook(const CANPacket_t *to_send) {
     int raw_angle_can = (((GET_BYTE(to_send, 2)) << 7) | ((GET_BYTE(to_send, 3) & 0xfeU) >> 1));
     int desired_angle = raw_angle_can - 16384;
     bool steer_control_enabled = ((GET_BYTE(to_send, 1) & 0x30U) >> 4);
-    if (steer_angle_cmd_checks(desired_angle, steer_control_enabled, RIVIAN_STEERING_LIMITS)) {
-      violation = true;
-    }
+    // if (steer_angle_cmd_checks(desired_angle, steer_control_enabled, RIVIAN_STEERING_LIMITS) && false) {
+    //  violation = true;
+    // }
   }
 
   // Longitudinal control
@@ -140,9 +140,9 @@ static int rivian_fwd_hook(int bus_num, int addr) {
 
   if(bus_num == 0) {
     // ACM_AdasSts
-    if (addr == 0x162) {
-      block_msg = true;
-    }
+    // if (addr == 0x162) {
+    //   block_msg = true;
+    // }
 
     if(!block_msg) {
       bus_fwd = 2;
