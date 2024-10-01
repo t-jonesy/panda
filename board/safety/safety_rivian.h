@@ -105,9 +105,9 @@ static bool rivian_tx_hook(const CANPacket_t *to_send) {
     int raw_angle_can = (((GET_BYTE(to_send, 2)) << 7) | ((GET_BYTE(to_send, 3) & 0xfeU) >> 1));
     int desired_angle = raw_angle_can - 16384;
     bool steer_control_enabled = ((GET_BYTE(to_send, 1) & 0x30U) >> 4);
-    // if (steer_angle_cmd_checks(desired_angle, steer_control_enabled, RIVIAN_STEERING_LIMITS) && false) {
-    //  violation = true;
-    // }
+    if (steer_angle_cmd_checks(desired_angle, steer_control_enabled, RIVIAN_STEERING_LIMITS)) {
+      violation = true;
+    }
   }
 
   // Longitudinal control
@@ -125,10 +125,6 @@ static bool rivian_tx_hook(const CANPacket_t *to_send) {
     } else {
       violation = true;
     }
-  }
-
-  if (violation) {
-    tx = false;
   }
 
   return tx;
