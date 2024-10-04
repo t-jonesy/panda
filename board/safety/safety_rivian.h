@@ -22,7 +22,6 @@ const int FLAG_RIVIAN_LONG_CONTROL = 1;
 const CanMsg RIVIAN_TX_MSGS[] = {
   {0x110, 0, 8},  // ACM_SteeringControl
   {0x160, 0, 5},  // ACM_longitudinalRequest
-  // {0x162, 2, 8},  // ACM_AdasSts
 };
 
 RxCheck rivian_rx_checks[] = {
@@ -127,23 +126,16 @@ static bool rivian_tx_hook(const CANPacket_t *to_send) {
     }
   }
 
+  if (violation) {
+    tx = false;
+  }
+
   return tx;
 }
 
 static int rivian_fwd_hook(int bus_num, int addr) {
   int bus_fwd = -1;
   bool block_msg = false;
-
-  if(bus_num == 0) {
-    // ACM_AdasSts
-    // if (addr == 0x162) {
-    //   block_msg = true;
-    // }
-
-    if(!block_msg) {
-      bus_fwd = 2;
-    }
-  }
 
   if(bus_num == 2) {
     // ACM_SteeringControl
